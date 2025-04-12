@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.groupName</groupId>
 	<artifactId>artefactName</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${env.BUILD_ID}</version>
 	<name>artefactName</name>
 	<description>Project template for Spring Boot</description>
 	<url/>
