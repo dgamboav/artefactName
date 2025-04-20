@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,7 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-                .collect(Collectors.toList());
+                .toList();
 
         log.error(errors.toString(),ex);
 
@@ -80,11 +81,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    // @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    // public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) { ... }
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
+        log.error(ex.getMessage(),ex);
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                "Method not supported.",
+                ex.getMessage() // Considera si quieres exponer el mensaje detallado
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
 
-    // @ExceptionHandler(MediaTypeNotSupportedException.class)
-    // public ResponseEntity<ErrorResponse> handleMediaTypeNotSupportedException(MediaTypeNotSupportedException ex, WebRequest request) { ... }
+     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+     public ResponseEntity<ErrorResponse> handleMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex, WebRequest request) {
+         log.error(ex.getMessage(),ex);
+         ErrorResponse errorResponse = new ErrorResponse(
+                 LocalDateTime.now(),
+                 HttpStatus.CONFLICT.value(),
+                 HttpStatus.CONFLICT.getReasonPhrase(),
+                 "Media type not supported.",
+                 ex.getMessage() // Considera si quieres exponer el mensaje detallado
+         );
+         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+     }
 
     // Genericos
     @ExceptionHandler(Exception.class)
