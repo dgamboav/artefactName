@@ -45,7 +45,6 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleResourceNotFoundException_shouldReturnNotFound() {
-        String errorMessage = "Resource not found";
         ConfigDataResource configDataResourceMock = mock(ConfigDataResource.class); // Crear un mock de ConfigDataResource
         ConfigDataResourceNotFoundException exception = new ConfigDataResourceNotFoundException(configDataResourceMock);
 
