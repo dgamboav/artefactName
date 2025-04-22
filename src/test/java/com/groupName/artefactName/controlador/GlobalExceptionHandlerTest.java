@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.config.ConfigDataResource;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -140,6 +141,23 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getBody().getStatus());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), response.getBody().getError());
         assertEquals("An unexpected error occurred.", response.getBody().getMessage());
+        assertNotNull(response.getBody().getTimestamp());
+    }
+
+    @Test
+    void handleDataIntegrityViolationException_shouldReturnConflict() {
+        String errorMessage = "Constraint violation occurred";
+        DataIntegrityViolationException exception = new DataIntegrityViolationException(errorMessage);
+
+        ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleDataIntegrityViolationException(exception, webRequest);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CONFLICT.value(), response.getBody().getStatus());
+        assertEquals(HttpStatus.CONFLICT.getReasonPhrase(), response.getBody().getError());
+        assertEquals("Data integrity violation.", response.getBody().getMessage());
+        assertEquals(errorMessage, response.getBody().getPath()); // Asumiendo que el mensaje de la excepción se guarda en 'path'
         assertNotNull(response.getBody().getTimestamp());
     }
 }
