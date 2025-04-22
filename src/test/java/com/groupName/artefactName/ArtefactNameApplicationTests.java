@@ -15,7 +15,6 @@ class ArtefactNameApplicationTests {
 
 	@Test
 	void contextLoads() {
-		ArtefactNameApplication.main(new String[] {});
 		assertNotNull(context, "El contexto de la aplicación no se cargó correctamente.");
 	}
 
