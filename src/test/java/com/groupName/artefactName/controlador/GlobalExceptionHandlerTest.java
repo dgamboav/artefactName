@@ -98,7 +98,6 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleHttpRequestMethodNotSupportedException_shouldReturnConflict() {
-        String errorMessage = "Request method not supported";
         HttpRequestMethodNotSupportedException exception = new HttpRequestMethodNotSupportedException("GET", Collections.emptyList());
 
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleHttpRequestMethodNotSupportedException(exception, webRequest);
@@ -134,9 +133,7 @@ class GlobalExceptionHandlerTest {
     void handleGenericException_shouldReturnInternalServerError() {
         String errorMessage = "Generic error";
         Exception exception = new RuntimeException(errorMessage);
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleGenericException(exception, webRequest);
-
         assertNotNull(response);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
