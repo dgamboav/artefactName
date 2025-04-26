@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CorsConfigTest {
+class CorsConfigTest {
 
     @Test
     void testAddCorsMappings() {
