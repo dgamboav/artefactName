@@ -7,9 +7,9 @@ pipeline {
         SONAR_SERVER_NAME = 'idea-sonarqube-instance' // Usar el nombre configurado en Jenkins
         SONAR_PROJECT_KEY = "${env.ORGANIZATION_NAME}:${env.PROJECT_NAME}" // Ejemplo de clave
         APP_IP = '$_APP_SERVER_IP_$'
-		    PHRASE = '$_APP_SERVER_PHRASE_$'
-		    RemotePort = '$_APP_SERVER_PORT_$'
-		    APP_URL = "http://${env.APP_IP}" // URL base de tu aplicación
+        PHRASE = '$_APP_SERVER_PHRASE_$'
+        REMOTE_PORT = '$_APP_SERVER_PORT_$'
+        APP_URL = "http://${env.APP_IP}" // URL base de tu aplicación
         E2E_TESTS_DIR = 'src/test/resources/end-to-end' // Ruta relativa dentro del workspace
     }
     stages {
@@ -123,7 +123,7 @@ pipeline {
 
                     entityFolders.each { entityFolder ->
                         def entityName = entityFolder.split('/').last()
-                        def endpointBase = "${appBaseUrl}:${env.RemotePort}/${entityName}/api"
+                        def endpointBase = "${appBaseUrl}:${env.REMOTE_PORT}/${entityName}/api"
 
                         operationConfig.each { operation, filename ->
                             def jsonFile = filename ? "${entityFolder}/${filename}" : null
