@@ -13,7 +13,7 @@ class CorsConfigTest {
     @Test
     void testAddCorsMappings() {
 
-        String[] origins = {"http://localhost:5173", "http://front-server:puerto-front"};
+        String[] origins = {"http://localhost:5173","http://front-server:puerto-front","http://front-server"};
         String[] methods = {"GET", "POST", "PUT", "DELETE", "OPTIONS"};
 
         // 1. Crear una instancia de la clase de configuración
