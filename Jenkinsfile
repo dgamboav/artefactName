@@ -86,13 +86,17 @@ pipeline {
 					echo "Borrando archivos JAR antiguos con nombre base: ${appNameBase}*.jar"
 					sshCommand remote: remote, command: "rm -f ${remoteDir}/${appNameBase}*.jar", failOnError: false
 
-					// 4. Copiar el nuevo archivo JAR
+                    // 4. Crear el directorio de despliegue
+                        echo "Creando el directorio de despliegue: ${remoteDir}"
+                        sshCommand remote: remote, command: "mkdir -p ${remoteDir}", failOnError: true
+
+					// 5. Copiar el nuevo archivo JAR
 					sshPut remote: remote, from: "${workspaceDir}/target/${appName}", into: remoteDir, failOnError: true
 
-					// 5. Ejecutar la nueva aplicación en segundo plano
+					// 6. Ejecutar la nueva aplicación en segundo plano
 					sshCommand remote: remote, command: "nohup java -jar ${remoteDir}/${appName} > ${remoteDir}/application.log 2>&1 &", failOnError: true
 
-					// 6. Esperar unos segundos para que se levante la aplicacion (opcional)
+					// 7. Esperar unos segundos para que se levante la aplicacion (opcional)
 					sleep time: 20, unit: 'SECONDS'
 
 					echo "Aplicación ${appName} desplegada."
