@@ -79,6 +79,12 @@ pipeline {
 					echo "Deteniendo aplicaciones existentes con nombre base: ${appNameBase}"
 					sshCommand remote: remote, command: "pkill -f '${appNameBase}'", failOnError: false
 
+			    	echo "Validando disponibilidad del puerto ${env.REMOTE_PORT}..."
+
+                    def checkPortCommand = "netstat -tuln | grep :${env.REMOTE_PORT}"
+                    def result = sshCommand remote: remote, command: checkPortCommand, failOnError: false
+                    def portInUse = false // Inicializamos a false
+
                     if (result != '') {
                         echo "Resultado del comando de validacion de puerto ${result}..."
                         portInUse = (result.exitStatus == 0)
