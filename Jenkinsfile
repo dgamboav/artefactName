@@ -79,6 +79,37 @@ pipeline {
 					echo "Deteniendo aplicaciones existentes con nombre base: ${appNameBase}"
 					sshCommand remote: remote, command: "pkill -f '${appNameBase}'", failOnError: false
 
+                    if (result != '') {
+                        echo "Resultado del comando de validacion de puerto ${result}..."
+                        portInUse = (result.exitStatus == 0)
+                    } else {
+                        echo "Advertencia: No se pudo obtener el código de salida del comando de verificación de puerto."
+                        echo "Asumiendo que el puerto ${env.REMOTE_PORT} está libre."
+                    }
+
+                    if (portInUse) {
+                        echo "El puerto ${env.REMOTE_PORT} ya está en uso. Intentando detener el proceso existente..."
+                        def processIdCommand = "lsof -i tcp:${env.REMOTE_PORT} -t"
+                        def processId = sshCommand(remote: remote, command: processIdCommand, returnStdout: true).trim()
+
+                        if (processId) {
+                            echo "Proceso con PID ${processId} encontrado. Intentando detenerlo..."
+                            sshCommand remote: remote, command: "sudo kill -9 ${processId}", failOnError: false
+                            sleep time: 5, unit: 'SECONDS'
+                            // Vuelve a verificar si el puerto está libre (opcional)
+                            portInUse = sshCommand(remote: remote, command: checkPortCommand, returnStatus: true).trim()
+                            if (portInUse == 0) {
+                                echo "El puerto ${env.REMOTE_PORT} ahora está libre."
+                            } else {
+                                error "No se pudo liberar el puerto ${env.REMOTE_PORT}. El despliegue del backend fallará."
+                            }
+                        } else {
+                            echo "No se encontró ningún proceso usando el puerto ${env.REMOTE_PORT} (esto es inesperado)."
+                        }
+                    } else {
+                        echo "El puerto ${env.REMOTE_PORT} está libre. Procediendo con el despliegue del backend."
+                    }
+
 					// 2. Esperar unos segundos para que se detengan las aplicaciones (opcional)
 					sleep time: 5, unit: 'SECONDS'
 
