@@ -164,7 +164,7 @@ pipeline {
 
                     entityFolders.each { entityFolder ->
                         def entityName = entityFolder.split('/').last()
-                        def endpointBase = "${appBaseUrl}:${env.REMOTE_PORT}/${entityName}/api"
+                        def endpointBase = "${appBaseUrl}:${env.REMOTE_PORT}/api/${entityName}s"
 
                         operationConfig.each { operation, filename ->
                             def jsonFile = filename ? "${entityFolder}/${filename}" : null
