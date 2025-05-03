@@ -11,7 +11,7 @@ import java.util.Map;
 @RestController
 public class AuthController {
 
-    @PostMapping("/login/api")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
