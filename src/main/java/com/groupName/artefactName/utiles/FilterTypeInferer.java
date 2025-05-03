@@ -5,15 +5,15 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.SingularAttribute;
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Component
 public class FilterTypeInferer {
 
-    private FilterTypeInferer() {
-        throw new IllegalStateException("Utility class");
-    }
-    public static Predicate inferPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String atributoNombre, Object valor, EntityType<?> entityType) {
+    public Predicate inferPredicate(CriteriaBuilder criteriaBuilder, Root<?> root, String atributoNombre, Object valor, EntityType<?> entityType) {
         SingularAttribute<?, ?> atributo = entityType.getDeclaredSingularAttribute(atributoNombre);
         Class<?> atributoTipo = atributo.getJavaType();
 
