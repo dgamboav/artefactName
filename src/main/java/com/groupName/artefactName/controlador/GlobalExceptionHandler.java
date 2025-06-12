@@ -1,6 +1,7 @@
 package com.groupName.artefactName.controlador;
 
 import com.groupName.artefactName.exceptions.BusinessLogicException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -108,6 +109,18 @@ public class GlobalExceptionHandler {
      }
 
     // Genericos
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(EntityNotFoundException ex, WebRequest request) {
+        log.error(ex.getMessage(),ex);
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                "Entity not found.",
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
         log.error(ex.getMessage(),ex);
