@@ -26,6 +26,9 @@
     <!--<logger name="org.apache.kafka" level="WARN" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>-->
+    <logger name="com.civislend" level="ERROR" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
 
     <logger name="com.groupName" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
@@ -34,6 +37,7 @@
     <appender name="MONGO_SYNC" class="com.groupName.artefactName.logging.MongoDbAppender">
         <uri>${mongoDbUri}</uri>
         <collectionName>${mongoCollectionName}</collectionName>
+        <applicationName>${springAppName}</applicationName>
     </appender>
 
     <appender name="MONGO" class="ch.qos.logback.classic.AsyncAppender">
@@ -43,7 +47,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="MONGODB"/>
+        <appender-ref ref="MONGO"/>
     </root>
 
 </configuration>

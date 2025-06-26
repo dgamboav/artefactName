@@ -37,6 +37,7 @@ public class MongoDbAppender extends AppenderBase<ILoggingEvent> {
 
     private String uri; // URI de conexión a MongoDB
     private String collectionName; // Nombre de la colección donde se guardarán los logs
+    private String applicationName;
     private MongoClient mongoClient; // transient para evitar serialización
     private MongoCollection<Document> logsCollection; // transient para evitar serialización
 
@@ -54,6 +55,9 @@ public class MongoDbAppender extends AppenderBase<ILoggingEvent> {
      */
     public void setCollectionName(String collectionName) {
         this.collectionName = collectionName;
+    }
+    public void setApplicationName(String applicationName){
+        this.applicationName = applicationName;
     }
 
     /**
@@ -140,7 +144,7 @@ public class MongoDbAppender extends AppenderBase<ILoggingEvent> {
             logDoc.append("thread", eventObject.getThreadName());
             logDoc.append("logger", eventObject.getLoggerName());
             logDoc.append("message", eventObject.getFormattedMessage());
-            logDoc.append("application", "YourApplicationName"); // Puedes externalizar esto si quieres
+            logDoc.append("application", applicationName); // Puedes externalizar esto si quieres
 
             // Añadir información del Throwable si existe
             IThrowableProxy throwableProxy = eventObject.getThrowableProxy();
