@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="your-spring-app"/>
+    <springProperty scope="context" name="mongoDbUri" source="spring.data.mongodb.uri" defaultValue="mongodb://localhost:27017/test_logs"/>
+    <springProperty scope="context" name="mongoCollectionName" source="logging.mongodb.collection-name" defaultValue="application_logs"/>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -26,5 +30,20 @@
     <logger name="com.groupName" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
+
+    <appender name="MONGO_SYNC" class="com.groupName.artefactName.logging.MongoDbAppender">
+        <uri>${mongoDbUri}</uri>
+        <collectionName>${mongoCollectionName}</collectionName>
+    </appender>
+
+    <appender name="MONGO" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="MONGO_SYNC" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold> <neverBlock>true</neverBlock>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="MONGODB"/>
+    </root>
 
 </configuration>
